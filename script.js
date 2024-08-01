@@ -1,5 +1,4 @@
-//your JS code here. If required.
-// Function that returns a promise resolving with the array [1, 2, 3, 4] after 3 seconds
+// Function to simulate asynchronous data fetching that resolves with an array of numbers after 3 seconds
 function getNumbers() {
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -8,7 +7,7 @@ function getNumbers() {
     });
 }
 
-// Function to update the output div with the current array
+// Function to update the output div with the provided array
 function updateOutput(array) {
     const outputDiv = document.getElementById('output');
     outputDiv.textContent = array.join(', ');
