@@ -1,41 +1,38 @@
-// Function to simulate asynchronous data fetching that resolves with an array of numbers after 3 seconds
-function getNumbers() {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve([1, 2, 3, 4]);
-        }, 3000);
-    });
-}
+// your-script.js
 
-// Function to update the output div with the provided array
-function updateOutput(array) {
-    const outputDiv = document.getElementById('output');
-    outputDiv.textContent = array.join(', ');
-}
+document.addEventListener('DOMContentLoaded', () => {
+    const ageForm = document.getElementById('ageForm');
+    const ageInput = document.getElementById('age');
+    const nameInput = document.getElementById('name');
 
-// Start the promise chain
-getNumbers()
-    .then(numbers => {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                // Filter out odd numbers
-                const evenNumbers = numbers.filter(num => num % 2 === 0);
-                updateOutput(evenNumbers); // Update the output after 1 second
-                resolve(evenNumbers);
-            }, 1000);
-        });
-    })
-    .then(evenNumbers => {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                // Multiply even numbers by 2
-                const multipliedNumbers = evenNumbers.map(num => num * 2);
-                updateOutput(multipliedNumbers); // Update the output after 2 seconds
-                resolve(multipliedNumbers);
-            }, 2000);
-        });
-    })
-    .catch(error => {
-        const outputDiv = document.getElementById('output');
-        outputDiv.textContent = `Error: ${error}`;
+    ageForm.addEventListener('submit', async (event) => {
+        event.preventDefault(); // Prevent default form submission
+
+        const age = parseInt(ageInput.value, 10);
+        const name = nameInput.value;
+
+        if (isNaN(age) || age <= 0) {
+            alert('Please enter a valid age.');
+            return;
+        }
+
+        try {
+            const result = await verifyAge(age);
+            alert(`Welcome, ${name}. You can vote.`);
+        } catch (error) {
+            alert(`Oh sorry, ${name}. You aren't old enough.`);
+        }
     });
+
+    function verifyAge(age) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                if (age >= 18) {
+                    resolve();
+                } else {
+                    reject();
+                }
+            }, 4000); // Wait for 4 seconds
+        });
+    }
+});
