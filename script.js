@@ -1,47 +1,49 @@
-document.addEventListener("DOMContentLoaded", function() {
-    // Function to simulate asynchronous data fetching that resolves with an array of numbers after 3 seconds
-    function getNumbers() {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve([1, 2, 3, 4]);
-            }, 3000);
-        });
-    }
-
-    // Function to update the output div with the provided array
-    function updateOutput(array) {
-        const outputDiv = document.getElementById('output');
-        if (outputDiv) {
-            outputDiv.textContent = array.join(', ');
-        }
-    }
-
-    // Start the promise chain
-    getNumbers()
-        .then(numbers => {
+function getNumbers() {
             return new Promise((resolve) => {
                 setTimeout(() => {
-                    // Filter out odd numbers
-                    const evenNumbers = numbers.filter(num => num % 2 === 0);
-                    updateOutput(evenNumbers); // Update the output after 1 second
+                    resolve([1, 2, 3, 4]);
+                }, 3000);
+            });
+        }
+
+        // Function to filter out odd numbers
+        function filterOdds(numbers) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const evenNumbers = numbers.filter(number => number % 2 === 0);
                     resolve(evenNumbers);
                 }, 1000);
             });
-        })
-        .then(evenNumbers => {
+        }
+
+        // Function to multiply even numbers by 2
+        function multiplyByTwo(numbers) {
             return new Promise((resolve) => {
                 setTimeout(() => {
-                    // Multiply even numbers by 2
-                    const multipliedNumbers = evenNumbers.map(num => num * 2);
-                    updateOutput(multipliedNumbers); // Update the output after 2 seconds
+                    const multipliedNumbers = numbers.map(number => number * 2);
                     resolve(multipliedNumbers);
                 }, 2000);
             });
-        })
-        .catch(error => {
-            const outputDiv = document.getElementById('output');
-            if (outputDiv) {
-                outputDiv.textContent = `Error: ${error}`;
-            }
-        });
-});
+        }
+
+        // Function to update the DOM
+        function updateOutput(text) {
+            document.getElementById('output').textContent = text;
+        }
+
+        // Chain the promises
+        getNumbers()
+            .then(numbers => {
+                return filterOdds(numbers).then(evenNumbers => {
+                    updateOutput(evenNumbers.join(', '));
+                    return evenNumbers;
+                });
+            })
+            .then(evenNumbers => {
+                return multiplyByTwo(evenNumbers).then(multipliedNumbers => {
+                    updateOutput(multipliedNumbers.join(', '));
+                });
+            })
+            .catch(error => {
+                console.error('An error occurred:', error);
+            });
